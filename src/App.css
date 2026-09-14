@@ -1,0 +1,284 @@
+:root {
+  --paper: #f0ede3;
+  --ink: #262420;
+  --muted: #6b6259;
+  --line: #ddd6c8;
+  --line-strong: #8a8170;
+
+  /* サイト全体のアクセント（藍色）＝製紙業・伝統工芸を連想する単色 */
+  --accent: #35547a;
+  --accent-paper: #e8eef5;
+
+  --serif: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
+}
+
+.site-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.site-header {
+  border-bottom: 3px solid var(--accent);
+  background: var(--paper);
+}
+
+.site-header__inner {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.site-header__title {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+}
+
+.site-header__nav a {
+  margin-left: 18px;
+  font-size: 0.85rem;
+  text-decoration: none;
+  color: var(--muted);
+}
+
+.site-header__nav a:hover {
+  color: var(--ink);
+}
+
+.site-main {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 20px 64px;
+  width: 100%;
+  flex: 1;
+}
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: 20px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.site-footer a {
+  text-decoration: none;
+}
+
+/* Hero */
+.hero {
+  padding: 48px 0 32px;
+  border-bottom: 1px solid var(--line);
+}
+
+.hero__eyebrow {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin: 0;
+}
+
+.hero__title {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 4.8vw, 2.5rem);
+  line-height: 1.5;
+  margin: 12px 0 18px;
+  border-left: 6px solid var(--accent);
+  padding-left: 16px;
+  color: var(--accent);
+}
+
+.hero__lead {
+  font-size: 1rem;
+  line-height: 1.9;
+  max-width: 62ch;
+  margin: 0;
+}
+
+/* Section titles */
+.section-title {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  margin: 0 0 6px;
+  padding-top: 40px;
+  color: var(--accent);
+}
+
+.section-lead {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0 0 16px;
+}
+
+/* Article groups（トップ・分野別） */
+.article-groups {
+  margin-top: 8px;
+}
+
+.article-group {
+  margin-bottom: 28px;
+  padding: 18px 20px;
+  background: var(--accent-paper);
+  border-left: 4px solid var(--accent);
+}
+
+.article-group__title {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.article-group__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.article-group__list a {
+  font-size: 1.03rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.article-group__list a:hover {
+  text-decoration: underline;
+}
+
+.article-group__dek {
+  margin: 4px 0 0;
+  font-size: 0.87rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Article page */
+.content-h1 {
+  font-family: var(--serif);
+  font-size: clamp(1.35rem, 3.6vw, 1.9rem);
+  line-height: 1.55;
+  margin: 32px 0 8px;
+}
+
+.article__zone {
+  display: inline-block;
+  font-size: 0.74rem;
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin: 28px 0 6px;
+  color: #fff;
+  background: var(--accent);
+}
+
+.article__dek {
+  color: var(--muted);
+  font-size: 1rem;
+  margin: 0 0 24px;
+}
+
+.article__section h2 {
+  font-size: 1.05rem;
+  margin: 0 0 10px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  color: var(--accent);
+}
+
+.article__section:first-of-type h2 {
+  border-top: none;
+  padding-top: 0;
+}
+
+.article__section p {
+  line-height: 1.95;
+  font-size: 0.98rem;
+  margin: 0 0 14px;
+}
+
+.article__sources {
+  margin-top: 36px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.article__sources h2 {
+  font-size: 0.85rem;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.article__sources ul {
+  padding-left: 18px;
+  margin: 0;
+}
+
+.content-p {
+  line-height: 1.9;
+}
+
+.content-body p {
+  line-height: 1.95;
+  margin: 0 0 16px;
+}
+
+.content-body h2 {
+  margin-top: 32px;
+  font-size: 1.05rem;
+  color: var(--accent);
+}
+
+/* Article index */
+.article-index {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.article-index__item {
+  padding: 14px 18px;
+  border-left: 4px solid var(--accent);
+  background: var(--accent-paper);
+}
+
+.article-index__zone {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.article-index__item a {
+  display: block;
+  font-size: 1.03rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 4px;
+  color: var(--ink);
+}
+
+.article-index__item p {
+  margin: 6px 0 0;
+  font-size: 0.87rem;
+  color: var(--muted);
+}
