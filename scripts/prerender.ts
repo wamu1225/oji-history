@@ -6,12 +6,13 @@ import * as path from 'path';
 import { articles } from '../src/data/articles';
 import { ABOUT_CONTENT, PRIVACY_CONTENT, SITE_NAME } from '../src/data/static-pages';
 import { CATEGORY_LABEL, type Category } from '../src/data/types';
+import { figureHtml } from '../src/data/figures-data';
 
 const DIST_DIR = path.resolve(process.cwd(), 'dist');
 const INDEX_HTML_PATH = path.join(DIST_DIR, 'index.html');
 const BASE = '/oji-history';
 const BASE_URL = 'https://study-apps.com/oji-history';
-const SITE_UPDATED_AT = '2026-09-15';
+const SITE_UPDATED_AT = '2026-09-16';
 
 console.log('--- oji-history SSG Pre-rendering ---');
 if (!fs.existsSync(INDEX_HTML_PATH)) {
@@ -147,11 +148,13 @@ for (const a of articles) {
     )
     .join('\n');
   const sourcesHtml = a.sources.map((s) => `<li>${esc(s)}</li>`).join('\n');
+  const figHtml = figureHtml(a.slug) ?? '';
   const body = `<article style="${shellStyle}">
     <p style="display:inline-block;font-size:0.74rem;padding:3px 10px;border-radius:12px;color:#fff;background:#35547a">${esc(CATEGORY_LABEL[a.category])}</p>
     <h1 style="${h1Style}">${esc(a.title)}</h1>
     <p style="color:#6b6259">${esc(a.dek)}</p>
     ${sectionsHtml}
+    ${figHtml}
     <div style="margin-top:24px;padding:14px 16px;background:#fff;border:1px solid #8a8170;border-radius:6px">
       <strong>出典</strong>
       <ul style="margin:6px 0 0;padding-left:18px">${sourcesHtml}</ul>

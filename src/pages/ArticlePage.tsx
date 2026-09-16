@@ -1,6 +1,7 @@
 import { articles } from '../data/articles';
 import { CATEGORY_LABEL } from '../data/types';
 import { href } from '../lib/router';
+import { figureHtml } from '../data/figures-data';
 
 export default function ArticlePage({ id }: { id: string }) {
   const article = articles.find((a) => a.slug === id);
@@ -28,6 +29,9 @@ export default function ArticlePage({ id }: { id: string }) {
           ))}
         </section>
       ))}
+      {figureHtml(article.slug) && (
+        <div dangerouslySetInnerHTML={{ __html: figureHtml(article.slug)! }} />
+      )}
       <footer className="article__sources">
         <h2>出典</h2>
         <ul>
