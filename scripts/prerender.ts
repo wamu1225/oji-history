@@ -33,6 +33,13 @@ function templateForDepth(depth: number): string {
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+// 本文中の [text](/articles/slug/) をリンクに変換する（ArticlePage.tsx の renderParagraph と対の単一ソース）。
+const escParagraph = (s: string) =>
+  esc(s).replace(
+    /\[([^\]]+)\]\(\/articles\/([a-z0-9-]+)\/\)/g,
+    (_m, text: string, slug: string) => `<a href="${BASE}/articles/${slug}/" style="color:#35547a">${text}</a>`,
+  );
+
 function mdToHtml(content: string): string {
   return content
     .split(/\n{2,}/)
@@ -143,16 +150,23 @@ console.log('✓ /articles/');
 for (const a of articles) {
   const sectionsHtml = a.sections
     .map(
-      (s) =>
-        `<h2 style="font-size:1.05rem;margin-top:24px">${esc(s.heading)}</h2>${s.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('\n')}`,
+      (s, i) =>
+        `<h2 id="sec-${i}" style="font-size:1.05rem;margin-top:24px">${esc(s.heading)}</h2>${s.paragraphs.map((p) => `<p>${escParagraph(p)}</p>`).join('\n')}`,
     )
     .join('\n');
+  const tocHtml = a.sections.length >= 2
+    ? `<nav aria-label="目次" style="margin:16px 0;padding:12px 16px;background:#fff;border:1px solid #8a8170;border-radius:6px">
+      <p style="margin:0 0 6px;font-weight:700;color:#35547a">目次</p>
+      <ol style="margin:0;padding-left:18px">${a.sections.map((s, i) => `<li><a href="#sec-${i}" style="color:#35547a">${esc(s.heading)}</a></li>`).join('')}</ol>
+    </nav>`
+    : '';
   const sourcesHtml = a.sources.map((s) => `<li>${esc(s)}</li>`).join('\n');
   const figHtml = figureHtml(a.slug) ?? '';
   const body = `<article style="${shellStyle}">
     <p style="display:inline-block;font-size:0.74rem;padding:3px 10px;border-radius:12px;color:#fff;background:#35547a">${esc(CATEGORY_LABEL[a.category])}</p>
     <h1 style="${h1Style}">${esc(a.title)}</h1>
     <p style="color:#6b6259">${esc(a.dek)}</p>
+    ${tocHtml}
     ${sectionsHtml}
     ${figHtml}
     <div style="margin-top:24px;padding:14px 16px;background:#fff;border:1px solid #8a8170;border-radius:6px">
