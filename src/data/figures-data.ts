@@ -87,8 +87,80 @@ function buildRouteMapSvg(): string {
 </figure>`;
 }
 
+// 通史の年表（4点）
+function buildHistoryTimelineSvg(): string {
+  const node = (x: number, year: string, label: string, color: string) =>
+    `<circle cx="${x}" cy="54" r="9" fill="${color}"/>` +
+    `<text x="${x}" y="34" font-size="11" font-weight="700" fill="#262420" text-anchor="middle">${year}</text>` +
+    `<text x="${x}" y="80" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[0]}</text>` +
+    (label.includes('|') ? `<text x="${x}" y="92" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[1]}</text>` : '');
+  return (
+    `<figure class="fig">` +
+    `<svg class="diagram-single" viewBox="0 0 300 110" width="100%" role="img" aria-label="王子の通史年表の図">` +
+    `<rect width="300" height="110" fill="#f0ede3"/>` +
+    `<line x1="34" y1="54" x2="266" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
+    `<path d="M266 54 l-8 -4 M266 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
+    node(40, '1591', '徳川家康が|朱印地を寄進', '#35547a') +
+    node(125, '1737', '吉宗が桜を寄進|庶民の行楽地に', '#b8923f') +
+    node(200, '1873〜', '製紙業・軍需産業|が並び立つ', '#35547a') +
+    node(260, '1947', '北区誕生', '#262420') +
+    `</svg>` +
+    `<figcaption>王子の通史（模式図）。徳川家康の朱印地寄進（1591年）、8代将軍吉宗による桜の寄進と庶民への開放（1737年）を経て、明治以降は製紙業（1873年・抄紙会社設立）と軍需産業（1904年ごろ〜）という二つの近代産業が並び立ち、昭和22年（1947年）の北区誕生に至る。</figcaption>` +
+    `</figure>`
+  );
+}
+
+// 抄紙会社→王子製紙の社名変遷（4点）
+function buildSeishiTimelineSvg(): string {
+  const node = (x: number, year: string, label: string, color: string) =>
+    `<circle cx="${x}" cy="54" r="9" fill="${color}"/>` +
+    `<text x="${x}" y="34" font-size="11" font-weight="700" fill="#262420" text-anchor="middle">${year}</text>` +
+    `<text x="${x}" y="80" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[0]}</text>` +
+    (label.includes('|') ? `<text x="${x}" y="92" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[1]}</text>` : '');
+  return (
+    `<figure class="fig">` +
+    `<svg class="diagram-single" viewBox="0 0 300 110" width="100%" role="img" aria-label="抄紙会社から王子製紙への年表の図">` +
+    `<rect width="300" height="110" fill="#f0ede3"/>` +
+    `<line x1="34" y1="54" x2="266" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
+    `<path d="M266 54 l-8 -4 M266 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
+    node(40, '1873', '渋沢栄一が|抄紙会社を設立', '#35547a') +
+    node(125, '1893', '「王子製紙」|へ改称', '#b8923f') +
+    node(200, '1933', '富士製紙合併|国内シェア8割', '#35547a') +
+    node(260, '1949', '財閥解体で|3社に分割', '#262420') +
+    `</svg>` +
+    `<figcaption>抄紙会社から王子製紙への社名変遷（模式図）。明治6年（1873年）設立の抄紙会社は、明治8年（1875年）に操業を開始し、明治26年（1893年）に「王子製紙」へ改称。昭和8年（1933年）の富士製紙・樺太工業合併で国内シェア8割に達したが、昭和24年（1949年）の過度経済力集中排除法により3社に分割された。</figcaption>` +
+    `</figure>`
+  );
+}
+
+// 陸軍造兵廠から赤レンガ図書館への年表（4点）
+function buildGunjuTimelineSvg(): string {
+  const node = (x: number, year: string, label: string, color: string) =>
+    `<circle cx="${x}" cy="54" r="9" fill="${color}"/>` +
+    `<text x="${x}" y="34" font-size="11" font-weight="700" fill="#262420" text-anchor="middle">${year}</text>` +
+    `<text x="${x}" y="80" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[0]}</text>` +
+    (label.includes('|') ? `<text x="${x}" y="92" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[1]}</text>` : '');
+  return (
+    `<figure class="fig">` +
+    `<svg class="diagram-single" viewBox="0 0 300 110" width="100%" role="img" aria-label="陸軍造兵廠から赤レンガ図書館への年表の図">` +
+    `<rect width="300" height="110" fill="#f0ede3"/>` +
+    `<line x1="34" y1="54" x2="266" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
+    `<path d="M266 54 l-8 -4 M266 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
+    node(40, '1904', '日露戦争|弾丸不足で設置', '#35547a') +
+    node(125, '1919', '弾丸工場の|建物が竣工', '#b8923f') +
+    node(200, '1945', '敗戦・|米軍が接収', '#262420') +
+    node(260, '2008', '赤レンガ|図書館へ転用', '#35547a') +
+    `</svg>` +
+    `<figcaption>陸軍造兵廠から赤レンガ図書館への年表（模式図）。日露戦争（1904年）前後の弾丸不足を受けて十条台に弾丸工場が設置され、大正8年（1919年）に建物が竣工。敗戦後は米軍に接収され、のちに陸上自衛隊十条駐屯地として使用されたが、平成20年（2008年）に北区立中央図書館（赤レンガ図書館）として生まれ変わった。</figcaption>` +
+    `</figure>`
+  );
+}
+
 const figures: Record<string, string> = {
   meguru: buildRouteMapSvg(),
+  history: buildHistoryTimelineSvg(),
+  seishi: buildSeishiTimelineSvg(),
+  gunju: buildGunjuTimelineSvg(),
 };
 
 export function figureHtml(slug: string): string | null {
