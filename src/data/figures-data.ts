@@ -156,11 +156,82 @@ function buildGunjuTimelineSvg(): string {
   );
 }
 
+// 弾丸工場から赤レンガ図書館への年表（4点）
+function buildAkarengaTimelineSvg(): string {
+  const node = (x: number, year: string, label: string, color: string) =>
+    `<circle cx="${x}" cy="54" r="9" fill="${color}"/>` +
+    `<text x="${x}" y="34" font-size="11" font-weight="700" fill="#262420" text-anchor="middle">${year}</text>` +
+    `<text x="${x}" y="80" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[0]}</text>` +
+    (label.includes('|') ? `<text x="${x}" y="92" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[1]}</text>` : '');
+  return (
+    `<figure class="fig">` +
+    `<svg class="diagram-single" viewBox="0 0 300 110" width="100%" role="img" aria-label="赤レンガ図書館の年表の図">` +
+    `<rect width="300" height="110" fill="#f0ede3"/>` +
+    `<line x1="34" y1="54" x2="266" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
+    `<path d="M266 54 l-8 -4 M266 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
+    node(40, '1919', '弾丸工場の|建物が竣工', '#35547a') +
+    node(125, '2008', 'リニューアル|開館', '#b8923f') +
+    node(200, '2009', 'グッドデザイン|賞を受賞', '#35547a') +
+    node(260, '2011', '図書館協会|建築賞を受賞', '#262420') +
+    `</svg>` +
+    `<figcaption>赤レンガ図書館の年表（模式図）。大正8年（1919年）に建てられた旧陸軍の弾丸工場の建物を保存活用し、平成20年（2008年）6月28日にリニューアルオープン。翌年にグッドデザイン賞、平成23年（2011年）には日本図書館協会建築賞を受賞しました。</figcaption>` +
+    `</figure>`
+  );
+}
+
+// 飛鳥山公園の年表（4点）
+function buildAsukayamaTimelineSvg(): string {
+  const node = (x: number, year: string, label: string, color: string) =>
+    `<circle cx="${x}" cy="54" r="9" fill="${color}"/>` +
+    `<text x="${x}" y="34" font-size="11" font-weight="700" fill="#262420" text-anchor="middle">${year}</text>` +
+    `<text x="${x}" y="80" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[0]}</text>` +
+    (label.includes('|') ? `<text x="${x}" y="92" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[1]}</text>` : '');
+  return (
+    `<figure class="fig">` +
+    `<svg class="diagram-single" viewBox="0 0 300 110" width="100%" role="img" aria-label="飛鳥山公園の年表の図">` +
+    `<rect width="300" height="110" fill="#f0ede3"/>` +
+    `<line x1="34" y1="54" x2="266" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
+    `<path d="M266 54 l-8 -4 M266 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
+    node(40, '1720頃', '吉宗が桜を|1200本以上植樹', '#35547a') +
+    node(140, '1737', '王子権現社へ|寄進・庶民に開放', '#b8923f') +
+    node(260, '1873', '太政官布達で|公園に指定', '#262420') +
+    `</svg>` +
+    `<figcaption>飛鳥山公園の年表（模式図）。8代将軍吉宗が享保5年（1720年）ごろから桜を植え、元文2年（1737年）に庶民へ開放。明治6年（1873年）1月15日、太政官布達第16号により日本最初期の公園の一つに指定されました。</figcaption>` +
+    `</figure>`
+  );
+}
+
+// 渋沢栄一の飛鳥山邸の年表（4点）
+function buildShibusawaTeiTimelineSvg(): string {
+  const node = (x: number, year: string, label: string, color: string) =>
+    `<circle cx="${x}" cy="54" r="9" fill="${color}"/>` +
+    `<text x="${x}" y="34" font-size="11" font-weight="700" fill="#262420" text-anchor="middle">${year}</text>` +
+    `<text x="${x}" y="80" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[0]}</text>` +
+    (label.includes('|') ? `<text x="${x}" y="92" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[1]}</text>` : '');
+  return (
+    `<figure class="fig">` +
+    `<svg class="diagram-single" viewBox="0 0 300 110" width="100%" role="img" aria-label="渋沢栄一の飛鳥山邸の年表の図">` +
+    `<rect width="300" height="110" fill="#f0ede3"/>` +
+    `<line x1="34" y1="54" x2="266" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
+    `<path d="M266 54 l-8 -4 M266 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
+    node(40, '1901', '渋沢栄一が|飛鳥山に本邸', '#35547a') +
+    node(125, '1917〜18', '晩香廬が|竣工（諸説）', '#b8923f') +
+    node(200, '1931', '渋沢栄一|没する', '#262420') +
+    node(260, '2005', '晩香廬・青淵文庫|重要文化財に', '#35547a') +
+    `</svg>` +
+    `<figcaption>渋沢栄一の飛鳥山邸の年表（模式図）。明治34年（1901年）から昭和6年（1931年）に没するまで本邸を構え、晩香廬は資料によって大正6〜7年（1917〜1918年）とされています。戦災を免れた晩香廬・青淵文庫は平成17年（2005年）12月27日に国の重要文化財に一括指定されました。</figcaption>` +
+    `</figure>`
+  );
+}
+
 const figures: Record<string, string> = {
   meguru: buildRouteMapSvg(),
   history: buildHistoryTimelineSvg(),
   seishi: buildSeishiTimelineSvg(),
   gunju: buildGunjuTimelineSvg(),
+  'akarenga-library': buildAkarengaTimelineSvg(),
+  asukayama: buildAsukayamaTimelineSvg(),
+  'shibusawa-tei': buildShibusawaTeiTimelineSvg(),
 };
 
 export function figureHtml(slug: string): string | null {
