@@ -224,12 +224,35 @@ function buildShibusawaTeiTimelineSvg(): string {
   );
 }
 
+// 装束稲荷の狐火伝承から「狐の行列」までの年表
+function buildSozokuInariTimelineSvg(): string {
+  const node = (x: number, year: string, label: string, color: string) =>
+    `<circle cx="${x}" cy="54" r="9" fill="${color}"/>` +
+    `<text x="${x}" y="34" font-size="11" font-weight="700" fill="#262420" text-anchor="middle">${year}</text>` +
+    `<text x="${x}" y="80" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[0]}</text>` +
+    (label.includes('|') ? `<text x="${x}" y="92" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[1]}</text>` : '');
+  return (
+    `<figure class="fig">` +
+    `<svg class="diagram-single" viewBox="0 0 300 110" width="100%" role="img" aria-label="装束稲荷の狐火伝承の年表の図">` +
+    `<rect width="300" height="110" fill="#f0ede3"/>` +
+    `<line x1="34" y1="54" x2="266" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
+    `<path d="M266 54 l-8 -4 M266 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
+    node(40, '寛永年間', '『若一王子縁起』|絵巻に描かれる', '#35547a') +
+    node(150, '1857', '広重が「名所|江戸百景」に描く', '#b8923f') +
+    node(260, '1993', '「狐の行列」|が始まる', '#262420') +
+    `</svg>` +
+    `<figcaption>装束稲荷の狐火伝承の年表（模式図）。文献上の源流は寛永年間制作の『若一王子縁起』絵巻とされ、安政4年（1857年）には歌川広重が「名所江戸百景」に描きました。平成5年（1993年）の大晦日から、伝承にちなむ「狐の行列」という新しい年中行事が始まっています。</figcaption>` +
+    `</figure>`
+  );
+}
+
 const figures: Record<string, string> = {
   meguru: buildRouteMapSvg(),
   history: buildHistoryTimelineSvg(),
   seishi: buildSeishiTimelineSvg(),
   gunju: buildGunjuTimelineSvg(),
   'akarenga-library': buildAkarengaTimelineSvg(),
+  'sozoku-inari': buildSozokuInariTimelineSvg(),
   asukayama: buildAsukayamaTimelineSvg(),
   'shibusawa-tei': buildShibusawaTeiTimelineSvg(),
 };
