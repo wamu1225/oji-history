@@ -246,8 +246,61 @@ function buildSozokuInariTimelineSvg(): string {
   );
 }
 
+// 年表図の共通ヘルパー（ラベルは1節点あたり最大3行）
+function buildLinearTimeline(
+  id: string,
+  title: string,
+  desc: string,
+  nodes: { x: number; year: string; lines: string[]; color: string }[],
+  caption: string,
+): string {
+  const parts = nodes
+    .map(
+      (n) =>
+        `<circle cx="${n.x}" cy="54" r="9" fill="${n.color}"/>` +
+        `<text x="${n.x}" y="34" font-size="12" font-weight="700" fill="#262420" text-anchor="middle">${n.year}</text>` +
+        n.lines.map((l, i) => `<text x="${n.x}" y="${80 + i * 13}" font-size="11.5" fill="#262420" text-anchor="middle">${l}</text>`).join(''),
+    )
+    .join('');
+  return (
+    `<figure class="fig">` +
+    `<svg class="diagram-single" viewBox="0 0 320 124" width="100%" role="img" aria-labelledby="${id}-title ${id}-desc">` +
+    `<title id="${id}-title">${title}</title><desc id="${id}-desc">${desc}</desc>` +
+    `<rect width="320" height="124" fill="#f0ede3"/>` +
+    `<line x1="24" y1="54" x2="296" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
+    `<path d="M296 54 l-8 -4 M296 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
+    parts +
+    `</svg><figcaption>${caption}</figcaption></figure>`
+  );
+}
+
+const chimeiFigure = () =>
+  buildLinearTimeline('chimei', '王子の地名が生まれるまでの年表の図', '源義家の伝承、元亨2年の若一王子の勧請、岸村から王子村への改称までの年表。', [
+    { x: 56, year: '康平年間', lines: ['義家が高台で', '祈祷（伝承）'], color: '#8a8170' },
+    { x: 160, year: '1322', lines: ['熊野から', '若一王子を勧請'], color: '#b8923f' },
+    { x: 262, year: '改称', lines: ['岸村から', '王子村へ', '（時期は諸説）'], color: '#35547a' },
+  ], '勧請は元亨2年（1322年）と伝わりますが、岸村から王子村への改称が同時だったかどうかは、当時の一次文書が乏しく確定していません。');
+
+const ojiJinjaFigure = () =>
+  buildLinearTimeline('ojijinja', '王子両社の別当寺と王子田楽の年表の図', '金輪寺の起こり、慶長14年の再興、明治初年の廃寺、昭和58年の王子田楽の復興までの年表。', [
+    { x: 42, year: '康平年間', lines: ['金輪寺の', '起こり', '（社伝）'], color: '#8a8170' },
+    { x: 121, year: '1609', lines: ['秀忠が', '金輪寺を', '再興'], color: '#b8923f' },
+    { x: 200, year: '明治初年', lines: ['神仏分離で', '廃寺に'], color: '#262420' },
+    { x: 279, year: '1983', lines: ['王子田楽が', '復興'], color: '#35547a' },
+  ], '王子両社の別当寺だった金輪寺は神仏分離で一度廃寺となり、中世様式の王子田楽は戦時中の途絶を経て昭和58年（1983年）に復興しました。');
+
+const ogiyaFigure = () =>
+  buildLinearTimeline('ogiya', '扇屋の年表の図', '慶安元年の掛茶屋としての創業、寛政11年頃の料理屋への転身、現在の玉子焼き専門店までの年表。', [
+    { x: 56, year: '1648', lines: ['弥左ェ門が', '掛茶屋を創業'], color: '#35547a' },
+    { x: 160, year: '1799頃', lines: ['料理屋へ転身', '玉子焼きで有名に'], color: '#b8923f' },
+    { x: 262, year: '現在', lines: ['玉子焼き', '専門店'], color: '#262420' },
+  ], '慶安元年（1648年）に王子稲荷の門前で掛茶屋として始まった店は、料理屋を経て玉子焼き専門店になりました。創業は伝承にもとづきます。');
+
 const figures: Record<string, string> = {
   meguru: buildRouteMapSvg(),
+  chimei: chimeiFigure(),
+  'oji-jinja': ojiJinjaFigure(),
+  ogiya: ogiyaFigure(),
   history: buildHistoryTimelineSvg(),
   seishi: buildSeishiTimelineSvg(),
   gunju: buildGunjuTimelineSvg(),
