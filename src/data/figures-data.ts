@@ -296,6 +296,35 @@ const ogiyaFigure = () =>
     { x: 262, year: '現在', lines: ['玉子焼き', '専門店'], color: '#262420' },
   ], '慶安元年（1648年）に王子稲荷の門前で掛茶屋として始まった店は、料理屋を経て玉子焼き専門店になりました。創業は伝承にもとづきます。');
 
+// 王子七滝の現況（名主の滝の記事用）
+function buildNanushiSvg(): string {
+  const rows: { name: string; note: string; color: string }[] = [
+    { name: '名主の滝', note: '現存（園内は男滝のみ）', color: '#35547a' },
+    { name: '権現の滝', note: '音無親水公園に復元', color: '#b8923f' },
+    { name: '不動の滝', note: '現存せず', color: '#8a8170' },
+    { name: '弁天の滝', note: '現存せず', color: '#8a8170' },
+    { name: '稲荷の滝', note: '現存せず', color: '#8a8170' },
+    { name: '大工の滝', note: '現存せず', color: '#8a8170' },
+    { name: '見晴らしの滝', note: '現存せず', color: '#8a8170' },
+  ];
+  const body = rows
+    .map((r, i) => {
+      const y = 30 + i * 26;
+      return `<circle cx="20" cy="${y - 4}" r="6" fill="${r.color}"/>` +
+        `<text x="36" y="${y}" font-size="12" font-weight="700" fill="#262420">${r.name}</text>` +
+        `<text x="128" y="${y}" font-size="11.5" fill="#262420">${r.note}</text>`;
+    })
+    .join('');
+  return `<figure class="fig">` +
+    `<svg class="diagram-single" viewBox="0 0 300 210" width="100%" role="img" aria-label="王子七滝の現況の図">` +
+    `<title>王子七滝の現況の図</title>` +
+    `<rect width="300" height="210" fill="#f0ede3"/>` +
+    body +
+    `</svg>` +
+    `<figcaption>王子七滝のうち、いまも水が落ちるのは名主の滝だけです。権現の滝は音無親水公園に復元されたものです。</figcaption>` +
+    `</figure>`;
+}
+
 const figures: Record<string, string> = {
   meguru: buildRouteMapSvg(),
   chimei: chimeiFigure(),
@@ -308,6 +337,7 @@ const figures: Record<string, string> = {
   'sozoku-inari': buildSozokuInariTimelineSvg(),
   asukayama: buildAsukayamaTimelineSvg(),
   'shibusawa-tei': buildShibusawaTeiTimelineSvg(),
+  'nanushi-no-taki': buildNanushiSvg(),
 };
 
 export function figureHtml(slug: string): string | null {
