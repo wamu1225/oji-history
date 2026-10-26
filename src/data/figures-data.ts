@@ -237,11 +237,11 @@ function buildSozokuInariTimelineSvg(): string {
     `<rect width="300" height="110" fill="#f0ede3"/>` +
     `<line x1="34" y1="54" x2="266" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
     `<path d="M266 54 l-8 -4 M266 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
-    node(40, '寛永年間', '『若一王子縁起』|絵巻に描かれる', '#35547a') +
+    node(40, '伝承', '大晦日に狐が|装束を整える', '#35547a') +
     node(150, '1857', '広重が「名所|江戸百景」に描く', '#b8923f') +
     node(260, '1993', '「狐の行列」|が始まる', '#262420') +
     `</svg>` +
-    `<figcaption>装束稲荷の狐火伝承の年表（模式図）。文献上の源流は寛永年間制作の『若一王子縁起』絵巻とされ、安政4年（1857年）には歌川広重が「名所江戸百景」に描きました。平成5年（1993年）の大晦日から、伝承にちなむ「狐の行列」という新しい年中行事が始まっています。</figcaption>` +
+    `<figcaption>装束稲荷の狐火伝承の年表（模式図）。大晦日に狐が装束を整えるという伝承は、安政4年（1857年）に歌川広重が「名所江戸百景」に描きました。平成5年（1993年）の大晦日から、伝承にちなむ「狐の行列」という新しい行事が始まっています。</figcaption>` +
     `</figure>`
   );
 }
@@ -275,19 +275,11 @@ function buildLinearTimeline(
 }
 
 const chimeiFigure = () =>
-  buildLinearTimeline('chimei', '王子の地名が生まれるまでの年表の図', '源義家の伝承、元亨2年の若一王子の勧請、岸村から王子村への改称までの年表。', [
-    { x: 56, year: '康平年間', lines: ['義家が高台で', '祈祷（伝承）'], color: '#8a8170' },
+  buildLinearTimeline('chimei', '王子の地名が生まれるまでの年表の図', '源氏武将の伝承、元亨2年の若一王子の勧請、岸村から王子村への改称までの年表。', [
+    { x: 56, year: '11世紀', lines: ['源氏の武将が', '慰霊（伝承）'], color: '#8a8170' },
     { x: 160, year: '1322', lines: ['熊野から', '若一王子を勧請'], color: '#b8923f' },
     { x: 262, year: '改称', lines: ['岸村から', '王子村へ', '（時期は諸説）'], color: '#35547a' },
-  ], '勧請は元亨2年（1322年）と伝わりますが、岸村から王子村への改称が同時だったかどうかは、当時の一次文書が乏しく確定していません。');
-
-const ojiJinjaFigure = () =>
-  buildLinearTimeline('ojijinja', '王子両社の別当寺と王子田楽の年表の図', '金輪寺の起こり、慶長14年の再興、明治初年の廃寺、昭和58年の王子田楽の復興までの年表。', [
-    { x: 42, year: '康平年間', lines: ['金輪寺の', '起こり', '（社伝）'], color: '#8a8170' },
-    { x: 121, year: '1609', lines: ['秀忠が', '金輪寺を', '再興'], color: '#b8923f' },
-    { x: 200, year: '明治初年', lines: ['神仏分離で', '廃寺に'], color: '#262420' },
-    { x: 279, year: '1983', lines: ['王子田楽が', '復興'], color: '#35547a' },
-  ], '王子両社の別当寺だった金輪寺は神仏分離で一度廃寺となり、中世様式の王子田楽は戦時中の途絶を経て昭和58年（1983年）に復興しました。');
+  ], '勧請は元亨2年（1322年）と伝わりますが、資料によって年代に揺れがあり、改称の時期も確定していません。');
 
 const ogiyaFigure = () =>
   buildLinearTimeline('ogiya', '扇屋の年表の図', '慶安元年の掛茶屋としての創業、寛政11年頃の料理屋への転身、現在の玉子焼き専門店までの年表。', [
@@ -328,7 +320,6 @@ function buildNanushiSvg(): string {
 const figures: Record<string, string> = {
   meguru: buildRouteMapSvg(),
   chimei: chimeiFigure(),
-  'oji-jinja': ojiJinjaFigure(),
   ogiya: ogiyaFigure(),
   history: buildHistoryTimelineSvg(),
   seishi: buildSeishiTimelineSvg(),
