@@ -191,7 +191,7 @@ function buildAsukayamaTimelineSvg(): string {
     `<rect width="300" height="110" fill="#f0ede3"/>` +
     `<line x1="34" y1="54" x2="266" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
     `<path d="M266 54 l-8 -4 M266 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
-    node(40, '1720頃', '吉宗が桜を|1200本以上植樹', '#35547a') +
+    node(40, '1720頃', '吉宗が桜を|約1000本植樹', '#35547a') +
     node(140, '1737', '王子権現社へ|寄進・庶民に開放', '#b8923f') +
     node(260, '1873', '太政官布達で|公園に指定', '#262420') +
     `</svg>` +
