@@ -4,6 +4,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { articles } from '../src/data/articles';
+import { ARTICLE_GROUPS } from '../src/data/articleGroups';
 import { ABOUT_CONTENT, PRIVACY_CONTENT, SITE_NAME } from '../src/data/static-pages';
 import { CATEGORY_LABEL, type Category } from '../src/data/types';
 import { figureHtml } from '../src/data/figures-data';
@@ -121,16 +122,17 @@ console.log('✓ トップページ');
 // ── 記事一覧 ──
 {
   const desc = '王子の地名の由来から、王子田楽、製紙業、軍需産業、飛鳥山公園、狐火伝承までをまとめた記事一覧です。';
-  const rows = articles
-    .map(
-      (a) =>
-        `<li>[${CATEGORY_LABEL[a.category]}] <a href="${BASE}/articles/${a.slug}/" style="color:#35547a">${esc(a.title)}</a>：${esc(a.dek)}</li>`,
-    )
-    .join('\n');
+  const row = (a: (typeof articles)[number]) =>
+    `<li>[${CATEGORY_LABEL[a.category]}] <a href="${BASE}/articles/${a.slug}/" style="color:#35547a">${esc(a.title)}</a>：${esc(a.dek)}</li>`;
+  const grouped = new Set(ARTICLE_GROUPS.flatMap((g) => g.slugs));
+  const rest = articles.filter((a) => !grouped.has(a.slug));
+  const rows = ARTICLE_GROUPS.map((g) =>
+    `<h2 style="font-size:1.05rem;margin-top:20px">${esc(g.title)}</h2><p style="color:#5b6470">${esc(g.lead)}</p><ul style="padding-left:18px">${g.slugs.map((s) => articles.find((a) => a.slug === s)).filter((a) => a !== undefined).map(row).join('\n')}</ul>`,
+  ).join('\n') + (rest.length ? `<h2 style="font-size:1.05rem;margin-top:20px">そのほか</h2><ul style="padding-left:18px">${rest.map(row).join('\n')}</ul>` : '');
   const body = `<article style="${shellStyle}">
     <h1 style="${h1Style}">記事一覧</h1>
     <p>${esc(desc)}</p>
-    <ul style="padding-left:18px">${rows}</ul>
+    ${rows}
     ${footerNav}
   </article>`;
   writePage(
