@@ -316,6 +316,35 @@ function buildNanushiSvg(): string {
     `</figure>`;
 }
 
+// トップの絵：左に桜の飛鳥山、中ほどに王子神社・王子稲荷の鳥居と社殿、右に赤レンガの建物（弾丸工場→図書館）、手前に石神井川（音無川）（模式図）
+export function heroSceneSvg(): string {
+  const tree = (x: number, y: number, r: number) =>
+    `<rect x="${x - 1.5}" y="${y}" width="3" height="${r + 4}" fill="#6b5a48"/>` +
+    `<circle cx="${x}" cy="${y}" r="${r}" fill="#e7c3cb"/><circle cx="${x - r * 0.6}" cy="${y + 3}" r="${r * 0.7}" fill="#efd3d9"/>`;
+  let windows = '';
+  for (let i = 0; i < 6; i++) {
+    const x = 236 + i * 18;
+    windows += `<path d="M${x} 146 v-16 a5 5 0 0 1 10 0 v16 z" fill="#f3e3cf"/>`;
+  }
+  let bricks = '';
+  for (let y = 112; y < 150; y += 7) bricks += `<line x1="226" y1="${y}" x2="346" y2="${y}" stroke="#8f4733" stroke-width="0.8"/>`;
+  return `<svg viewBox="0 0 360 210" width="100%" role="img" aria-label="王子の町の模式的な絵。左に桜の咲く飛鳥山、中ほどに神社の鳥居と社殿、右に赤レンガの建物、手前に石神井川の流れ">
+  <rect width="360" height="210" fill="#e8eef5"/>
+  <circle cx="300" cy="40" r="16" fill="#f3d9a4"/>
+  <path d="M0 150 L0 104 Q40 72 84 70 Q128 72 168 150 Z" fill="#9fb39a"/>
+  ${tree(28, 98, 11)}${tree(56, 82, 12)}${tree(88, 78, 12)}${tree(118, 92, 11)}${tree(142, 116, 10)}
+  <g transform="translate(160,104)"><path d="M6 20 L34 6 L62 20 Z" fill="#35547a"/><rect x="12" y="20" width="44" height="26" fill="#efe6d6" stroke="#35547a" stroke-width="1.2"/><rect x="28" y="30" width="12" height="16" fill="#35547a"/></g>
+  <g transform="translate(176,118)" fill="#b0463a"><rect x="3" y="7" width="3" height="25"/><rect x="25" y="7" width="3" height="25"/><path d="M-3 2 Q15.5 5 34 2 L34 6 Q15.5 9 -3 6 Z"/><rect x="0" y="11" width="31" height="3"/></g>
+  <path d="M222 108 L232 98 L340 98 L350 108 Z" fill="#5a4a3e"/>
+  <rect x="226" y="108" width="120" height="42" fill="#b35e45"/>
+  ${bricks}${windows}
+  <rect x="0" y="150" width="360" height="10" fill="#cbbf9f"/>
+  <path d="M0 160 H360 V210 H0 Z" fill="#7d9bb8"/>
+  <path d="M0 160 Q60 168 120 162 T240 164 T360 160" fill="none" stroke="#a9c0d6" stroke-width="2"/>
+  <path d="M24 182 h44 M110 194 h56 M214 180 h48 M290 198 h46" stroke="#a9c0d6" stroke-width="2" stroke-linecap="round"/>
+</svg>`;
+}
+
 const figures: Record<string, string> = {
   meguru: buildRouteMapSvg(),
   chimei: chimeiFigure(),

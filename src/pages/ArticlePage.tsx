@@ -3,6 +3,7 @@ import { articles } from '../data/articles';
 import { CATEGORY_LABEL } from '../data/types';
 import { href } from '../lib/router';
 import { figureHtml } from '../data/figures-data';
+import { ARTICLE_POINTS } from '../data/hooks';
 
 // 本文中の [text](/articles/slug/) をリンクに変換する（他記事とつなぐための最小限のインライン記法）。
 function renderParagraph(text: string): ReactNode[] {
@@ -42,6 +43,12 @@ export default function ArticlePage({ id }: { id: string }) {
       <p className="article__zone">{CATEGORY_LABEL[article.category]}</p>
       <h1 className="content-h1">{article.title}</h1>
       <p className="article__dek">{article.dek}</p>
+      {ARTICLE_POINTS[article.slug] && (
+        <aside className="points" aria-label="ざっくり3行">
+          <p className="points__label">ざっくり3行</p>
+          <ol>{ARTICLE_POINTS[article.slug].map((p) => <li key={p}>{p}</li>)}</ol>
+        </aside>
+      )}
       {article.sections.length >= 2 && (
         <nav className="article__toc" aria-label="目次">
           <p className="article__toc-label">目次</p>

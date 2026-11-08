@@ -6,8 +6,9 @@ import * as path from 'path';
 import { articles } from '../src/data/articles';
 import { ARTICLE_GROUPS } from '../src/data/articleGroups';
 import { ABOUT_CONTENT, PRIVACY_CONTENT, SITE_NAME } from '../src/data/static-pages';
-import { CATEGORY_LABEL, type Category } from '../src/data/types';
-import { figureHtml } from '../src/data/figures-data';
+import { CATEGORY_LABEL } from '../src/data/types';
+import { figureHtml, heroSceneSvg } from '../src/data/figures-data';
+import { HOOK, ARTICLE_POINTS } from '../src/data/hooks';
 
 const DIST_DIR = path.resolve(process.cwd(), 'dist');
 const INDEX_HTML_PATH = path.join(DIST_DIR, 'index.html');
@@ -83,26 +84,22 @@ function wrap(depth: number, title: string, desc: string, urlPath: string, bodyH
   return html;
 }
 
-const CATEGORY_ORDER: Category[] = ['name-origin', 'history', 'shrine', 'food', 'industry', 'culture', 'spots', 'faq'];
-
-// ── トップ（分野別の入口＝亀戸型） ──
+// ── トップ（つかみ→問い→記事ぜんぶ。React の Home.tsx と同じ内容） ──
 const homeDesc =
   '東京都北区王子の歴史と文化を一次資料でまとめる。地名の由来、王子田楽、製紙業と軍需産業、飛鳥山公園、装束稲荷の狐火伝承まで。';
-const groupedHtml = CATEGORY_ORDER.map((cat) => {
-  const list = articles.filter((a) => a.category === cat);
-  if (list.length === 0) return '';
-  const rows = list
-    .map(
-      (a) =>
-        `<li><a href="${BASE}/articles/${a.slug}/" style="color:#35547a"><strong>${esc(a.title)}</strong></a><br/><span style="color:#6b6259;font-size:0.88rem">${esc(a.dek)}</span></li>`,
-    )
-    .join('\n');
-  return `<h2 style="font-size:1.15rem;margin:24px 0 8px;color:#35547a">${esc(CATEGORY_LABEL[cat])}</h2>\n<ul style="padding-left:18px">${rows}</ul>`;
-}).join('\n');
+const groupedHtml = ARTICLE_GROUPS.map((g) =>
+  `<h3 style="font-size:1.02rem;margin:18px 0 6px;color:#35547a">${esc(g.title)}</h3>\n<ul style="padding-left:18px">${g.slugs.map((sl) => articles.find((a) => a.slug === sl)).filter((a) => a !== undefined).map((a) => `<li><a href="${BASE}/articles/${a.slug}/" style="color:#35547a">${esc(a.title)}</a></li>`).join('\n')}</ul>`,
+).join('\n');
+const titleOf = (slug: string) => articles.find((a) => a.slug === slug)?.title ?? '';
 const homeBody = `<article style="${shellStyle}">
-  <p style="color:#6b6259;font-size:0.8rem">東京都北区 王子</p>
-  <h1 style="${h1Style}">王子の歴史と文化</h1>
-  <p>${esc(homeDesc)}</p>
+  <p style="color:#6b6259;font-size:0.8rem">王子の歴史と文化ガイド　東京都北区 王子</p>
+  <h1 style="${h1Style}">${esc(HOOK.catch).replace('\n', '<br/>')}</h1>
+  <p>${esc(HOOK.sub)}</p>
+  ${heroSceneSvg()}
+  <ul style="padding-left:18px">${HOOK.numbers.map((x) => `<li><a href="${BASE}/articles/${x.slug}/" style="color:#35547a"><strong>${esc(x.n + x.unit)}</strong></a>：${esc(x.label)}</li>`).join('')}</ul>
+  <h2 style="font-size:1.15rem;margin:24px 0 8px;color:#35547a">気になる問いから読む</h2>
+  <ul style="padding-left:18px">${HOOK.questions.map((x) => `<li><a href="${BASE}/articles/${x.slug}/" style="color:#35547a"><strong>${esc(x.q)}</strong></a> ${esc(x.a)}（${esc(titleOf(x.slug))}）</li>`).join('')}</ul>
+  <h2 style="font-size:1.15rem;margin:24px 0 8px;color:#35547a">記事をぜんぶ見る</h2>
   ${groupedHtml}
   ${footerNav}
 </article>`;
@@ -168,6 +165,7 @@ for (const a of articles) {
     <p style="display:inline-block;font-size:0.74rem;padding:3px 10px;border-radius:12px;color:#fff;background:#35547a">${esc(CATEGORY_LABEL[a.category])}</p>
     <h1 style="${h1Style}">${esc(a.title)}</h1>
     <p style="color:#6b6259">${esc(a.dek)}</p>
+    ${ARTICLE_POINTS[a.slug] ? `<div style="margin:12px 0;padding:12px 14px;background:#fff;border:2px solid #35547a;border-radius:8px"><p style="margin:0 0 4px;font-weight:700;color:#35547a;font-size:0.85rem">ざっくり3行</p><ol style="margin:0;padding-left:1.3em">${ARTICLE_POINTS[a.slug].map((p) => `<li>${esc(p)}</li>`).join('')}</ol></div>` : ''}
     ${tocHtml}
     ${sectionsHtml}
     ${figHtml}
