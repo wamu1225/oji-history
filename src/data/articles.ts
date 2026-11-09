@@ -410,7 +410,7 @@ export const articles: Article[] = [
   {
     slug: 'faq',
     title: '王子・滝野川・西ケ原、境界はどこにあるのか',
-    dek: '飛鳥山公園がある町、北区の成り立ちにまつわる誤解を整理します。',
+    dek: '北区は1947年に王子区と滝野川区が合わさってできた区。公園の南側は、もとは滝野川区です。',
     category: 'faq',
     updatedAt: '2026-10-25',
     sections: [
