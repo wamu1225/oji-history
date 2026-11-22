@@ -110,25 +110,47 @@ function buildHistoryTimelineSvg(): string {
   );
 }
 
-// 抄紙会社→王子製紙の社名変遷（4点）
+// 抄紙会社の3年（拡大）と、社名の移り変わり76年（縮小）を年に比例した2段で見せる
 function buildSeishiTimelineSvg(): string {
-  const node = (x: number, year: string, label: string, color: string) =>
-    `<circle cx="${x}" cy="54" r="9" fill="${color}"/>` +
-    `<text x="${x}" y="34" font-size="11" font-weight="700" fill="#262420" text-anchor="middle">${year}</text>` +
-    `<text x="${x}" y="80" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[0]}</text>` +
-    (label.includes('|') ? `<text x="${x}" y="92" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[1]}</text>` : '');
+  const ax = (yr: number) => 20 + (yr - 1872) * (280 / 6);
+  const bx = (yr: number) => 20 + (yr - 1873) * (280 / 76);
+  const t = (x: number, y: number, s: string, anchor = 'middle', bold = false) =>
+    `<text x="${x.toFixed(1)}" y="${y}" font-size="10" ${bold ? 'font-weight="700" ' : ''}fill="#262420" text-anchor="${anchor}">${s}</text>`;
+  const dot = (x: number, color: string) => `<circle cx="${x.toFixed(1)}" cy="64" r="5" fill="${color}"/>`;
+  const leader = (x: number, y1: number, y2: number) => `<line x1="${x.toFixed(1)}" y1="${y1}" x2="${x.toFixed(1)}" y2="${y2}" stroke="#8a8170" stroke-width="1"/>`;
+  let a = '';
+  a += t(20, 14, '1872〜1877年の6年を拡大', 'start', true);
+  a += `<line x1="20" y1="64" x2="300" y2="64" stroke="#8a8170" stroke-width="2"/>`;
+  for (let y = 1872; y <= 1878; y++) a += `<line x1="${ax(y).toFixed(1)}" y1="60" x2="${ax(y).toFixed(1)}" y2="68" stroke="#8a8170" stroke-width="1"/>`;
+  const up = (yr: number, l1: string, l2: string, anchor: string, tx: number, color: string) =>
+    leader(ax(yr), 54, 64) + dot(ax(yr), color) + t(tx, 36, l1, anchor, true) + t(tx, 48, l2, anchor);
+  const down = (yr: number, l1: string, l2: string, anchor: string, tx: number, color: string) =>
+    leader(ax(yr), 64, 76) + dot(ax(yr), color) + t(tx, 90, l1, anchor, true) + t(tx, 102, l2, anchor);
+  a += up(1872.87, '1872年11月', '12名が出願', 'start', 20, '#8a8170');
+  a += down(1873.12, '1873年2月', '抄紙会社の設立', 'start', 20, '#35547a');
+  a += up(1874.5, '1874年', '外国人技師2人', 'start', 100, '#b8923f');
+  a += down(1875.96, '1875年12月', '開業式', 'middle', ax(1875.96), '#b0463a');
+  a += up(1877.5, '1877年', '2人が退社', 'middle', 262, '#262420');
+  // 下段：社名の移り変わり（1873〜1949）
+  let b = '';
+  b += t(20, 128, '1873〜1949年の76年を縮小', 'start', true);
+  const seg = (y0: number, y1: number, fill: string, label: string) =>
+    `<rect x="${bx(y0).toFixed(1)}" y="138" width="${(bx(y1) - bx(y0)).toFixed(1)}" height="22" fill="${fill}"/>` +
+    (label ? `<text x="${((bx(y0) + bx(y1)) / 2).toFixed(1)}" y="153" font-size="10" fill="#fff" text-anchor="middle">${label}</text>` : '');
+  b += seg(1873, 1876, '#35547a', '') + seg(1876, 1893, '#8a8170', '製紙会社') + seg(1893, 1949, '#b0463a', '王子製紙（56年）');
+  const tick = (yr: number, y: number, s: string, anchor: string, tx: number) =>
+    `<line x1="${bx(yr).toFixed(1)}" y1="160" x2="${bx(yr).toFixed(1)}" y2="${y - 10}" stroke="#8a8170" stroke-width="1"/>` + t(tx, y, s, anchor);
+  b += tick(1873, 176, '1873 抄紙会社の設立', 'start', 20);
+  b += tick(1893, 190, '1893 王子製紙へ改称', 'start', bx(1893));
+  b += tick(1933, 176, '1933 富士製紙と合併', 'middle', bx(1933));
+  b += tick(1949, 190, '1949 3社に分割', 'end', 300);
   return (
     `<figure class="fig">` +
-    `<svg class="diagram-single" viewBox="0 0 300 110" width="100%" role="img" aria-label="抄紙会社から王子製紙への年表の図">` +
-    `<rect width="300" height="110" fill="#f0ede3"/>` +
-    `<line x1="34" y1="54" x2="266" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
-    `<path d="M266 54 l-8 -4 M266 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
-    node(40, '1873', '抄紙会社が|設立される', '#35547a') +
-    node(125, '1893', '「王子製紙」|へ改称', '#b8923f') +
-    node(200, '1933', '富士製紙合併|洋紙8割超', '#35547a') +
-    node(260, '1949', '財閥解体で|3社に分割', '#262420') +
+    `<svg class="diagram-single" viewBox="0 0 320 200" width="100%" role="img" aria-label="抄紙会社の設立から開業までの3年と、1949年の3社分割までの社名の移り変わりを、年に比例して描いた図">` +
+    `<title>抄紙会社の3年と社名の移り変わりの図</title>` +
+    `<rect width="320" height="200" fill="#f0ede3"/>` + a + b +
     `</svg>` +
-    `<figcaption>設立（1873年）と操業開始（1875年）は別の年です。</figcaption>` +
+    `<figcaption>上は出願から開業までの3年。出願・設立・開業は3つの別の年で、外国人技師が雇われたのは設立の翌年でした。下は社名の移り変わりで、「抄紙会社」と呼ばれたのは3年ほどです。</figcaption>` +
     `</figure>`
   );
 }
@@ -280,12 +302,35 @@ const chimeiFigure = () =>
     { x: 262, year: '改称', lines: ['岸村から', '王子村へ', '（時期は諸説）'], color: '#35547a' },
   ], '勧請は元亨2年（1322年）と伝わりますが、資料によって年代に揺れがあり、改称の時期も確定していません。');
 
-const ogiyaFigure = () =>
-  buildLinearTimeline('ogiya', '扇屋の年表の図', '寛政11年の開業、文化・文政期の料理屋番付を経て、現在も玉子焼きを伝えるまでの年表。', [
-    { x: 56, year: '1799', lines: ['王子稲荷門前で', '開業と伝わる'], color: '#35547a' },
-    { x: 160, year: '19世紀前半', lines: ['江戸の料理屋', '番付に登場'], color: '#b8923f' },
-    { x: 262, year: '現在', lines: ['玉子焼きの味を', '伝える'], color: '#262420' },
-  ], '寛政11年（1799年）開業と伝わります。店の案内では慶安元年（1648年）の創業です。');
+// 扇屋：開業の年の食い違い（拡大前）と、広重の絵までの年表を、年に比例した2段で描く
+function buildOgiyaSvg(): string {
+  const t = (x: number, y: number, s: string, anchor = 'middle', bold = false) =>
+    `<text x="${x.toFixed(1)}" y="${y}" font-size="10" ${bold ? 'font-weight="700" ' : ''}fill="#262420" text-anchor="${anchor}">${s}</text>`;
+  const ax = (yr: number) => 20 + (yr - 1640) * (280 / 170);
+  const bx = (yr: number) => 20 + (yr - 1795) * (280 / 100);
+  let a = t(20, 14, '開業の年は、資料で151年ずれる', 'start', true);
+  a += `<line x1="20" y1="52" x2="300" y2="52" stroke="#8a8170" stroke-width="2"/>`;
+  a += `<line x1="${ax(1648).toFixed(1)}" y1="52" x2="${ax(1799).toFixed(1)}" y2="52" stroke="#b0463a" stroke-width="5"/>`;
+  a += `<circle cx="${ax(1648).toFixed(1)}" cy="52" r="5" fill="#8a8170"/><circle cx="${ax(1799).toFixed(1)}" cy="52" r="5" fill="#35547a"/>`;
+  a += t(ax(1648), 34, '1648年', 'start', true) + t(ax(1648), 74, '店の案内の創業', 'start');
+  a += t(ax(1799), 34, '1799年', 'end', true) + t(ax(1799), 74, '北区の資料の開業', 'end');
+  a += t((ax(1648) + ax(1799)) / 2, 94, '151年', 'middle', true);
+  let b = t(20, 124, '1795〜1895年の100年を拡大', 'start', true);
+  b += `<line x1="20" y1="150" x2="300" y2="150" stroke="#8a8170" stroke-width="2"/>`;
+  b += `<rect x="${bx(1804).toFixed(1)}" y="144" width="${(bx(1830) - bx(1804)).toFixed(1)}" height="12" fill="#b8923f"/>`;
+  b += `<circle cx="${bx(1799).toFixed(1)}" cy="150" r="5" fill="#35547a"/><circle cx="${bx(1839).toFixed(1)}" cy="150" r="5" fill="#b0463a"/><circle cx="${bx(1887).toFixed(1)}" cy="150" r="5" fill="#8a8170"/>`;
+  b += t(bx(1799), 136, '1799年 開業', 'start') + t(bx(1817), 172, '文化・文政期 番付で上位', 'start');
+  b += t(bx(1839), 136, '1838〜40年頃 広重の絵', 'start') + t(bx(1887), 185, '明治中ごろ 海老屋が消える', 'end');
+  return (
+    `<figure class="fig">` +
+    `<svg class="diagram-single" viewBox="0 0 320 194" width="100%" role="img" aria-label="扇屋の開業年が資料で151年ずれることと、1799年の開業から明治中ごろまでの年表を、年に比例して描いた図">` +
+    `<title>扇屋の開業年と、広重の絵までの年表の図</title>` +
+    `<rect width="320" height="194" fill="#f0ede3"/>` + a + b +
+    `</svg>` +
+    `<figcaption>上は、北区の資料（1799年）と店の案内（1648年）の開き。下は開業と伝わる1799年から、広重が描いた1838〜40年頃、海老屋が消えた明治中ごろまでです。</figcaption>` +
+    `</figure>`
+  );
+}
 
 // 王子七滝の現況（名主の滝の記事用）
 function buildNanushiSvg(): string {
@@ -348,7 +393,7 @@ export function heroSceneSvg(): string {
 const figures: Record<string, string> = {
   meguru: buildRouteMapSvg(),
   chimei: chimeiFigure(),
-  ogiya: ogiyaFigure(),
+  ogiya: buildOgiyaSvg(),
   history: buildHistoryTimelineSvg(),
   seishi: buildSeishiTimelineSvg(),
   gunju: buildGunjuTimelineSvg(),
