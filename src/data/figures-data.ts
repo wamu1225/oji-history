@@ -140,7 +140,7 @@ function buildSeishiTimelineSvg(): string {
   b += seg(1873, 1876, '#35547a', '') + seg(1876, 1893, '#8a8170', '製紙会社') + seg(1893, 1949, '#b0463a', '王子製紙（56年）');
   const tick = (yr: number, y: number, s: string, anchor: string, tx: number) =>
     `<line x1="${bx(yr).toFixed(1)}" y1="160" x2="${bx(yr).toFixed(1)}" y2="${y - 10}" stroke="#8a8170" stroke-width="1"/>` + t(tx, y, s, anchor);
-  b += tick(1873, 176, '1873 抄紙会社の設立', 'start', 20);
+  b += tick(1873, 176, '1873 設立', 'start', 20);
   b += tick(1893, 190, '1893 王子製紙へ改称', 'start', bx(1893));
   b += tick(1933, 176, '1933 富士製紙と合併', 'middle', bx(1933));
   b += tick(1949, 190, '1949 3社に分割', 'end', 300);
