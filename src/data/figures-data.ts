@@ -47,6 +47,9 @@ function buildRouteMapSvg(): string {
     })
     .join('\n');
 
+  const legM = pts.map((p, i) =>
+    i === 0 ? 0 : Math.round(Math.hypot(p.x - pts[i - 1].x, p.y - pts[i - 1].y) / 10) * 10,
+  );
   const barMeters = 200;
   const barPx = barMeters * scale;
   const barX0 = PAD;
@@ -76,14 +79,14 @@ function buildRouteMapSvg(): string {
   </svg>
   <div class="fig-map__legend">
     <ol>
-      ${pts.map((p) => `<li><span class="fig-map__dot fig-map__dot--${p.category}">${p.order}</span>${esc(p.name)}</li>`).join('\n      ')}
+      ${pts.map((p) => `<li><span class="fig-map__dot fig-map__dot--${p.category}">${p.order}</span>${esc(p.name)}${legM[p.order - 1] ? `<span class="fig-map__leg">前の地点から直線約${legM[p.order - 1]}m</span>` : ''}</li>`).join('\n      ')}
     </ol>
     <p class="fig-map__key">
       <span class="fig-map__key-item"><span class="fig-map__dot fig-map__dot--faith">●</span>社寺・信仰</span>
       <span class="fig-map__key-item"><span class="fig-map__dot fig-map__dot--heritage">●</span>公園・近代遺産</span>
     </p>
   </div>
-  <figcaption>6地点の位置関係を、各施設の公表座標から算出して描いた図。測量精度ではなく、実座標にもとづく相対位置の目安。実際の道のりは道路事情により図の直線と異なる。</figcaption>
+  <figcaption>6地点の位置関係を、各施設の公表座標から算出して描いた図。測量精度ではなく、実座標にもとづく相対位置の目安。凡例の距離は地点間の直線で、6区間の合計は約1.9km。道のりは道路により長くなる。</figcaption>
 </figure>`;
 }
 
@@ -267,40 +270,30 @@ function buildSozokuInariTimelineSvg(): string {
   );
 }
 
-// 年表図の共通ヘルパー（ラベルは1節点あたり最大3行）
-function buildLinearTimeline(
-  id: string,
-  title: string,
-  desc: string,
-  nodes: { x: number; year: string; lines: string[]; color: string }[],
-  caption: string,
-): string {
-  const parts = nodes
-    .map(
-      (n) =>
-        `<circle cx="${n.x}" cy="54" r="9" fill="${n.color}"/>` +
-        `<text x="${n.x}" y="34" font-size="12" font-weight="700" fill="#262420" text-anchor="middle">${n.year}</text>` +
-        n.lines.map((l, i) => `<text x="${n.x}" y="${80 + i * 13}" font-size="11.5" fill="#262420" text-anchor="middle">${l}</text>`).join(''),
-    )
-    .join('');
+const chimeiFigure = () => {
+  const t = (x: number, y: number, v: string, anchor = 'middle', bold = false) =>
+    `<text x="${x.toFixed(1)}" y="${y}" font-size="11" ${bold ? 'font-weight="700" ' : ''}fill="#262420" text-anchor="${anchor}">${v}</text>`;
+  const ax = (yr: number) => 24 + (yr - 1300) * (272 / 200);
+  const a = ax(1322);
+  const b = ax(1478);
+  let g = t(24, 16, '「王子」の始まりは、資料で156年ずれる', 'start', true);
+  g += `<line x1="24" y1="62" x2="296" y2="62" stroke="#8a8170" stroke-width="2"/>`;
+  g += `<line x1="${a.toFixed(1)}" y1="62" x2="${b.toFixed(1)}" y2="62" stroke="#b0463a" stroke-width="6"/>`;
+  g += `<circle cx="${a.toFixed(1)}" cy="62" r="5" fill="#b8923f"/><circle cx="${b.toFixed(1)}" cy="62" r="5" fill="#35547a"/>`;
+  g += t(a, 42, '1322年', 'start', true) + t(a, 84, '元亨2年・勧請', 'start');
+  g += t(a, 98, '（通説・豊島氏）', 'start');
+  g += t(b, 42, '1478年', 'end', true) + t(b, 84, '文明10年・鎮座', 'end');
+  g += t(b, 98, '（『水府志料』）', 'end');
+  g += t((a + b) / 2, 62 + 22, '', 'middle');
+  g += t(24, 118, '1300', 'start') + t(296, 118, '1500年', 'end');
   return (
-    `<figure class="fig">` +
-    `<svg class="diagram-single" viewBox="0 0 320 124" width="100%" role="img" aria-labelledby="${id}-title ${id}-desc">` +
-    `<title id="${id}-title">${title}</title><desc id="${id}-desc">${desc}</desc>` +
-    `<rect width="320" height="124" fill="#f0ede3"/>` +
-    `<line x1="24" y1="54" x2="296" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
-    `<path d="M296 54 l-8 -4 M296 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
-    parts +
-    `</svg><figcaption>${caption}</figcaption></figure>`
+    `<figure class="fig"><svg class="diagram-single" viewBox="0 0 320 126" width="100%" role="img" aria-labelledby="chimei-title chimei-desc">` +
+    `<title id="chimei-title">王子の地名が生まれた年の二つの説の図</title>` +
+    `<desc id="chimei-desc">1322年と1478年の2つの年を、年に比例して並べた図。間は156年。</desc>` +
+    `<rect width="320" height="126" fill="#f0ede3"/>${g}</svg>` +
+    `<figcaption>どちらの年も勧請・鎮座の年で、岸村から王子村への改称の時期は確定していません。</figcaption></figure>`
   );
-}
-
-const chimeiFigure = () =>
-  buildLinearTimeline('chimei', '王子の地名が生まれるまでの年表の図', '源氏武将の伝承、元亨2年の若一王子の勧請、岸村から王子村への改称までの年表。', [
-    { x: 56, year: '11世紀', lines: ['源氏の武将が', '慰霊（伝承）'], color: '#8a8170' },
-    { x: 160, year: '1322', lines: ['熊野から', '若一王子を勧請'], color: '#b8923f' },
-    { x: 262, year: '改称', lines: ['岸村から', '王子村へ', '（時期は諸説）'], color: '#35547a' },
-  ], '勧請は元亨2年（1322年）と伝わりますが、資料によって年代に揺れがあり、改称の時期も確定していません。');
+};
 
 // 扇屋：開業の年の食い違い（拡大前）と、広重の絵までの年表を、年に比例した2段で描く
 function buildOgiyaSvg(): string {
