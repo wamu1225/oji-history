@@ -92,23 +92,27 @@ function buildRouteMapSvg(): string {
 
 // 通史の年表（4点）
 function buildHistoryTimelineSvg(): string {
-  const node = (x: number, year: string, label: string, color: string) =>
-    `<circle cx="${x}" cy="54" r="9" fill="${color}"/>` +
-    `<text x="${x}" y="34" font-size="11" font-weight="700" fill="#262420" text-anchor="middle">${year}</text>` +
-    `<text x="${x}" y="80" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[0]}</text>` +
-    (label.includes('|') ? `<text x="${x}" y="92" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[1]}</text>` : '');
+  const x = (yr: number) => 16 + (yr - 1591) * (268 / 417);
+  const t = (px: number, y: number, s: string, anchor: string, bold = false) =>
+    `<text x="${px.toFixed(1)}" y="${y}" font-size="10.5" ${bold ? 'font-weight="700" ' : ''}fill="#262420" text-anchor="${anchor}">${s}</text>`;
+  const dot = (yr: number, color: string) => `<circle cx="${x(yr).toFixed(1)}" cy="60" r="5" fill="${color}"/>`;
+  const leader = (yr: number, y1: number, y2: number) => `<line x1="${x(yr).toFixed(1)}" y1="${y1}" x2="${x(yr).toFixed(1)}" y2="${y2}" stroke="#8a8170" stroke-width="1"/>`;
   return (
     `<figure class="fig">` +
-    `<svg class="diagram-single" viewBox="0 0 300 110" width="100%" role="img" aria-label="王子の通史年表の図">` +
-    `<rect width="300" height="110" fill="#f0ede3"/>` +
-    `<line x1="34" y1="54" x2="266" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
-    `<path d="M266 54 l-8 -4 M266 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
-    node(40, '1591', '徳川家康が|朱印地を寄進', '#35547a') +
-    node(125, '1737', '吉宗が桜を寄進|庶民の行楽地に', '#b8923f') +
-    node(200, '1873〜', '製紙業・軍需産業|が並び立つ', '#35547a') +
-    node(260, '1947', '北区誕生', '#262420') +
+    `<svg class="diagram-single" viewBox="0 0 300 112" width="100%" role="img" aria-label="1591年から1947年までを年に比例して並べた王子の年表">` +
+    `<rect width="300" height="112" fill="#f0ede3"/>` +
+    `<line x1="${x(1591)}" y1="60" x2="${x(1947).toFixed(1)}" y2="60" stroke="#8a8170" stroke-width="2.2"/>` +
+    leader(1728, 44, 60) + `<rect x="${x(1720).toFixed(1)}" y="57" width="${(x(1737) - x(1720)).toFixed(1)}" height="6" fill="#b8923f"/>` +
+    leader(1591, 60, 78) + dot(1591, '#35547a') +
+    leader(1873, 60, 78) + dot(1873, '#b0463a') +
+    leader(1947, 44, 60) + dot(1947, '#262420') +
+    t(x(1728), 28, '1720〜37年', 'middle', true) + t(x(1728), 40, '吉宗が桜を植え寄進', 'middle') +
+    t(16, 92, '1591年', 'start', true) + t(16, 104, '家康が朱印地を寄進', 'start') +
+    t(x(1873), 92, '1873年', 'middle', true) + t(x(1873), 104, '公園指定・抄紙会社', 'middle') +
+    t(x(1947), 28, '1947年', 'end', true) + t(x(1947), 40, '北区が発足', 'end') +
+    t(x(1732), 76, '282年', 'middle') + t(x(1910), 54, '74年', 'middle') +
     `</svg>` +
-    `<figcaption>家康の寄進から北区の誕生まで。近代は製紙と軍需が並んでいました。</figcaption>` +
+    `<figcaption>家康の朱印地から北区の発足まで、356年を年に比例して並べました。公園指定と抄紙会社は同じ1873年です。</figcaption>` +
     `</figure>`
   );
 }
