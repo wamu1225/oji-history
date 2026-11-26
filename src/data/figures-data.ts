@@ -332,7 +332,7 @@ function buildSozokuInariTimelineSvg(): string {
 
 const chimeiFigure = () => {
   const t = (x: number, y: number, v: string, anchor = 'middle', bold = false) =>
-    `<text x="${x.toFixed(1)}" y="${y}" font-size="11" ${bold ? 'font-weight="700" ' : ''}fill="#262420" text-anchor="${anchor}">${v}</text>`;
+    `<text x="${x.toFixed(1)}" y="${y}" font-size="11.8" ${bold ? 'font-weight="700" ' : ''}fill="#262420" text-anchor="${anchor}">${v}</text>`;
   const ax = (yr: number) => 24 + (yr - 1300) * (272 / 200);
   const a = ax(1322);
   const b = ax(1478);
