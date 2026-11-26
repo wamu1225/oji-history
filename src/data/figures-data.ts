@@ -94,7 +94,7 @@ function buildRouteMapSvg(): string {
 function buildHistoryTimelineSvg(): string {
   const x = (yr: number) => 16 + (yr - 1591) * (268 / 417);
   const t = (px: number, y: number, s: string, anchor: string, bold = false) =>
-    `<text x="${px.toFixed(1)}" y="${y}" font-size="10.5" ${bold ? 'font-weight="700" ' : ''}fill="#262420" text-anchor="${anchor}">${s}</text>`;
+    `<text x="${px.toFixed(1)}" y="${y}" font-size="11.5" ${bold ? 'font-weight="700" ' : ''}fill="#262420" text-anchor="${anchor}">${s}</text>`;
   const dot = (yr: number, color: string) => `<circle cx="${x(yr).toFixed(1)}" cy="60" r="5" fill="${color}"/>`;
   const leader = (yr: number, y1: number, y2: number) => `<line x1="${x(yr).toFixed(1)}" y1="${y1}" x2="${x(yr).toFixed(1)}" y2="${y2}" stroke="#8a8170" stroke-width="1"/>`;
   return (
@@ -358,7 +358,7 @@ const chimeiFigure = () => {
 // 扇屋：開業の年の食い違い（拡大前）と、広重の絵までの年表を、年に比例した2段で描く
 function buildOgiyaSvg(): string {
   const t = (x: number, y: number, s: string, anchor = 'middle', bold = false) =>
-    `<text x="${x.toFixed(1)}" y="${y}" font-size="10" ${bold ? 'font-weight="700" ' : ''}fill="#262420" text-anchor="${anchor}">${s}</text>`;
+    `<text x="${x.toFixed(1)}" y="${y}" font-size="11.5" ${bold ? 'font-weight="700" ' : ''}fill="#262420" text-anchor="${anchor}">${s}</text>`;
   const ax = (yr: number) => 20 + (yr - 1640) * (280 / 170);
   const bx = (yr: number) => 20 + (yr - 1795) * (280 / 100);
   let a = t(20, 14, '開業の年は、資料で151年ずれる', 'start', true);
@@ -373,12 +373,12 @@ function buildOgiyaSvg(): string {
   b += `<rect x="${bx(1804).toFixed(1)}" y="144" width="${(bx(1830) - bx(1804)).toFixed(1)}" height="12" fill="#b8923f"/>`;
   b += `<circle cx="${bx(1799).toFixed(1)}" cy="150" r="5" fill="#35547a"/><circle cx="${bx(1839).toFixed(1)}" cy="150" r="5" fill="#b0463a"/><circle cx="${bx(1887).toFixed(1)}" cy="150" r="5" fill="#8a8170"/>`;
   b += t(bx(1799), 136, '1799年 開業', 'start') + t(bx(1817), 172, '文化・文政期 番付で上位', 'start');
-  b += t(bx(1839), 136, '1838〜40年頃 広重の絵', 'start') + t(bx(1887), 185, '明治中ごろ 海老屋が消える', 'end');
+  b += t(bx(1839), 136, '1838〜40年頃 広重の絵', 'start') + t(bx(1887), 192, '明治中ごろ 海老屋が消える', 'end');
   return (
     `<figure class="fig">` +
-    `<svg class="diagram-single" viewBox="0 0 320 194" width="100%" role="img" aria-label="扇屋の開業年が資料で151年ずれることと、1799年の開業から明治中ごろまでの年表を、年に比例して描いた図">` +
+    `<svg class="diagram-single" viewBox="0 0 320 200" width="100%" role="img" aria-label="扇屋の開業年が資料で151年ずれることと、1799年の開業から明治中ごろまでの年表を、年に比例して描いた図">` +
     `<title>扇屋の開業年と、広重の絵までの年表の図</title>` +
-    `<rect width="320" height="194" fill="#f0ede3"/>` + a + b +
+    `<rect width="320" height="200" fill="#f0ede3"/>` + a + b +
     `</svg>` +
     `<figcaption>上は、北区の資料（1799年）と店の案内（1648年）の開き。下は開業と伝わる1799年から、広重が描いた1838〜40年頃、海老屋が消えた明治中ごろまでです。</figcaption>` +
     `</figure>`
