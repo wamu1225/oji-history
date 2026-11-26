@@ -7,7 +7,7 @@ import { articles } from '../src/data/articles';
 import { ARTICLE_GROUPS } from '../src/data/articleGroups';
 import { ABOUT_CONTENT, PRIVACY_CONTENT, SITE_NAME } from '../src/data/static-pages';
 import { CATEGORY_LABEL } from '../src/data/types';
-import { figureHtml, heroSceneSvg } from '../src/data/figures-data';
+import { figureHtml, figureSlot, heroSceneSvg } from '../src/data/figures-data';
 import { HOOK, ARTICLE_POINTS } from '../src/data/hooks';
 
 const DIST_DIR = path.resolve(process.cwd(), 'dist');
@@ -150,7 +150,7 @@ for (const a of articles) {
   const sectionsHtml = a.sections
     .map(
       (s, i) =>
-        `<h2 id="sec-${i}" style="font-size:1.05rem;margin-top:24px">${esc(s.heading)}</h2>${s.paragraphs.map((p) => `<p>${escParagraph(p)}</p>`).join('\n')}`,
+        `<h2 id="sec-${i}" style="font-size:1.05rem;margin-top:24px">${esc(s.heading)}</h2>${s.paragraphs.map((p) => `<p>${escParagraph(p)}</p>`).join('\n')}${figureSlot(a.slug) === i ? (figureHtml(a.slug) ?? '') : ''}`,
     )
     .join('\n');
   const tocHtml = a.sections.length >= 2
@@ -160,7 +160,7 @@ for (const a of articles) {
     </nav>`
     : '';
   const sourcesHtml = a.sources.map((s) => `<li>${esc(s)}</li>`).join('\n');
-  const figHtml = figureHtml(a.slug) ?? '';
+  const figHtml = figureSlot(a.slug) < 0 ? (figureHtml(a.slug) ?? '') : '';
   const body = `<article style="${shellStyle}">
     <p style="display:inline-block;font-size:0.74rem;padding:3px 10px;border-radius:12px;color:#fff;background:#35547a">${esc(CATEGORY_LABEL[a.category])}</p>
     <h1 style="${h1Style}">${esc(a.title)}</h1>

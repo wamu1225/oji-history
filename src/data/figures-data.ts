@@ -122,7 +122,7 @@ function buildSeishiTimelineSvg(): string {
   const ax = (yr: number) => 20 + (yr - 1872) * (280 / 6);
   const bx = (yr: number) => 20 + (yr - 1873) * (280 / 76);
   const t = (x: number, y: number, s: string, anchor = 'middle', bold = false) =>
-    `<text x="${x.toFixed(1)}" y="${y}" font-size="10" ${bold ? 'font-weight="700" ' : ''}fill="#262420" text-anchor="${anchor}">${s}</text>`;
+    `<text x="${x.toFixed(1)}" y="${y}" font-size="11.5" ${bold ? 'font-weight="700" ' : ''}fill="#262420" text-anchor="${anchor}">${s}</text>`;
   const dot = (x: number, color: string) => `<circle cx="${x.toFixed(1)}" cy="64" r="5" fill="${color}"/>`;
   const leader = (x: number, y1: number, y2: number) => `<line x1="${x.toFixed(1)}" y1="${y1}" x2="${x.toFixed(1)}" y2="${y2}" stroke="#8a8170" stroke-width="1"/>`;
   let a = '';
@@ -143,7 +143,7 @@ function buildSeishiTimelineSvg(): string {
   b += t(20, 128, '1873〜1949年の76年を縮小', 'start', true);
   const seg = (y0: number, y1: number, fill: string, label: string) =>
     `<rect x="${bx(y0).toFixed(1)}" y="138" width="${(bx(y1) - bx(y0)).toFixed(1)}" height="22" fill="${fill}"/>` +
-    (label ? `<text x="${((bx(y0) + bx(y1)) / 2).toFixed(1)}" y="153" font-size="10" fill="#fff" text-anchor="middle">${label}</text>` : '');
+    (label ? `<text x="${((bx(y0) + bx(y1)) / 2).toFixed(1)}" y="153" font-size="11.5" fill="#fff" text-anchor="middle">${label}</text>` : '');
   b += seg(1873, 1876, '#35547a', '') + seg(1876, 1893, '#8a8170', '製紙会社') + seg(1893, 1949, '#b0463a', '王子製紙（56年）');
   const tick = (yr: number, y: number, s: string, anchor: string, tx: number) =>
     `<line x1="${bx(yr).toFixed(1)}" y1="160" x2="${bx(yr).toFixed(1)}" y2="${y - 10}" stroke="#8a8170" stroke-width="1"/>` + t(tx, y, s, anchor);
@@ -162,25 +162,81 @@ function buildSeishiTimelineSvg(): string {
   );
 }
 
-// 陸軍造兵廠から赤レンガ図書館への年表（4点）
+// 十条台の用地の移り変わりを、年に比例した縦の帯で見せる（陸軍→米軍→返還後）
 function buildGunjuTimelineSvg(): string {
-  const node = (x: number, year: string, label: string, color: string) =>
-    `<circle cx="${x}" cy="54" r="9" fill="${color}"/>` +
-    `<text x="${x}" y="34" font-size="11" font-weight="700" fill="#262420" text-anchor="middle">${year}</text>` +
-    `<text x="${x}" y="80" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[0]}</text>` +
-    (label.includes('|') ? `<text x="${x}" y="92" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[1]}</text>` : '');
+  const Y0 = 34;
+  const k = 4.2;
+  const y = (yr: number) => (Y0 + (yr - 1904) * k).toFixed(1);
+  const AX = 74;
+  const band = (y0: number, y1: number, fill: string) =>
+    `<rect x="${AX - 6}" y="${y(y0)}" width="12" height="${((y1 - y0) * k).toFixed(1)}" fill="${fill}"/>`;
+  const ev = (yr: number, label: string, ty = 0) => {
+    const [l1, l2] = label.split('|');
+    const yy = Number(y(yr));
+    return `<line x1="${AX + 6}" y1="${yy}" x2="${AX + 16}" y2="${yy}" stroke="#262420" stroke-width="1.2"/>` +
+      `<text x="${AX - 12}" y="${yy + 4}" font-size="11.5" font-weight="700" fill="#262420" text-anchor="end">${yr === 1904.5 ? '1904〜05' : yr === 1918.5 ? '1918〜19' : Math.round(yr)}</text>` +
+      `<text x="${AX + 22}" y="${yy + 4 + ty}" font-size="11.5" fill="#262420">${l1}</text>` +
+      (l2 ? `<text x="${AX + 22}" y="${yy + 18 + ty}" font-size="11.5" fill="#262420">${l2}</text>` : '');
+  };
+  const leg = (x: number, fill: string, s: string) =>
+    `<rect x="${x}" y="8" width="11" height="11" fill="${fill}"/><text x="${x + 15}" y="18" font-size="11.5" fill="#262420">${s}</text>`;
   return (
     `<figure class="fig">` +
-    `<svg class="diagram-single" viewBox="0 0 300 110" width="100%" role="img" aria-label="陸軍造兵廠から赤レンガ図書館への年表の図">` +
-    `<rect width="300" height="110" fill="#f0ede3"/>` +
-    `<line x1="34" y1="54" x2="266" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
-    `<path d="M266 54 l-8 -4 M266 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
-    node(40, '1904', '日露戦争|弾丸不足で設置', '#35547a') +
-    node(125, '1919', '弾丸工場の|建物が竣工', '#b8923f') +
-    node(200, '1945', '敗戦・|米軍が接収', '#262420') +
-    node(260, '2008', '赤レンガ|図書館へ転用', '#35547a') +
+    `<svg class="diagram-single" viewBox="0 0 300 ${Number(y(2008)) + 30}" width="100%" role="img" aria-label="十条台の用地が、陸軍の工場、米軍の接収、返還後と移り変わった年表を、年に比例した帯で描いた図">` +
+    `<title>十条台の用地の移り変わりの図</title>` +
+    `<rect width="300" height="${Number(y(2008)) + 30}" fill="#f0ede3"/>` +
+    leg(10, '#7a3a2e', '陸軍の工場') + leg(104, '#8a8170', '米軍の接収') + leg(202, '#35547a', '返還後') +
+    band(1904.5, 1945, '#7a3a2e') + band(1945, 1971, '#8a8170') + band(1971, 2008, '#35547a') +
+    ev(1904.5, '弾丸工場を設置|銃包製造所が小石川から移る') +
+    ev(1918.5, '変圧所（254号棟）|弾丸鉛身場（275号棟）') +
+    ev(1930, '火工廠の本部事務所が建つ') +
+    ev(1945, '敗戦。一部を米軍が接収') +
+    ev(1959, '駐屯地側は自衛隊へ') +
+    ev(1971, '中央公園側の用地を返還') +
+    ev(1981, '文化センターが開館') +
+    ev(2008, '中央図書館が開館') +
     `</svg>` +
-    `<figcaption>弾丸工場の建物が、米軍・自衛隊を経て図書館になりました。</figcaption>` +
+    `<figcaption>帯の長さは年数に比例しています。陸軍の工場だったのは約40年、米軍の接収が26年、返還から図書館の開館までが37年です。</figcaption>` +
+    `</figure>`
+  );
+}
+
+// 平塚神社へ：北区「尾久・上中里コース」の8地点を順に並べた図
+function buildWagashiRouteSvg(): string {
+  const stops: [string, string][] = [
+    ['JR尾久駅', ''],
+    ['東灌森稲荷神社', '石鳥居は吉原の尾張屋彦太郎の奉納'],
+    ['東覚寺', '赤紙仁王'],
+    ['上田端八幡神社', '上田端の村の鎮守'],
+    ['富士見橋エコー広場館', 'リサイクル活動の拠点'],
+    ['北区防災センター', '1984年11月開館'],
+    ['平塚神社', '豊島氏の館・甲冑塚'],
+    ['JR上中里駅', '橋上駅舎・終点'],
+  ];
+  const X = 40;
+  const gap = 40;
+  const y = (i: number) => 38 + i * gap;
+  const H = y(stops.length - 1) + 30;
+  const items = stops
+    .map(([n, d], i) => {
+      const hot = i === 6;
+      const yy = y(i);
+      return `<circle cx="${X}" cy="${yy}" r="${hot ? 10 : 7}" fill="${hot ? '#b0463a' : '#35547a'}"/>` +
+        `<text x="${X}" y="${yy + 4}" font-size="11.5" font-weight="700" fill="#fff" text-anchor="middle">${i + 1}</text>` +
+        `<text x="${X + 22}" y="${yy + (d ? -2 : 4)}" font-size="12" font-weight="700" fill="#262420">${n}</text>` +
+        (d ? `<text x="${X + 22}" y="${yy + 13}" font-size="11.5" fill="#262420">${d}</text>` : '');
+    })
+    .join('');
+  return (
+    `<figure class="fig">` +
+    `<svg class="diagram-single" viewBox="0 0 300 ${H}" width="100%" role="img" aria-label="北区の尾久・上中里コースの8か所を歩く順に並べた図。7番目が平塚神社">` +
+    `<title>尾久・上中里コースの8か所の図</title>` +
+    `<rect width="300" height="${H}" fill="#f0ede3"/>` +
+    `<line x1="${X}" y1="${y(0)}" x2="${X}" y2="${y(stops.length - 1)}" stroke="#8a8170" stroke-width="2.2"/>` +
+    `<text x="10" y="16" font-size="11.5" font-weight="700" fill="#262420">全長4.0km・約60分（地点の間隔は等間隔の模式）</text>` +
+    items +
+    `</svg>` +
+    `<figcaption>平塚神社は7番目で、終点の上中里駅の1つ手前です。尾久駅から歩くと、神社の前に5か所を回ります。</figcaption>` +
     `</figure>`
   );
 }
@@ -394,12 +450,19 @@ const figures: Record<string, string> = {
   history: buildHistoryTimelineSvg(),
   seishi: buildSeishiTimelineSvg(),
   gunju: buildGunjuTimelineSvg(),
+  wagashi: buildWagashiRouteSvg(),
   'akarenga-library': buildAkarengaTimelineSvg(),
   'sozoku-inari': buildSozokuInariTimelineSvg(),
   asukayama: buildAsukayamaTimelineSvg(),
   'shibusawa-tei': buildShibusawaTeiTimelineSvg(),
   'nanushi-no-taki': buildNanushiSvg(),
 };
+
+// 図を、何番目の節のあとに置くか（無ければ記事の末尾）
+const figureAfter: Record<string, number> = { gunju: 1 };
+export function figureSlot(slug: string): number {
+  return figureAfter[slug] ?? -1;
+}
 
 export function figureHtml(slug: string): string | null {
   return figures[slug] ?? null;

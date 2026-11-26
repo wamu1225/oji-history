@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { articles } from '../data/articles';
 import { CATEGORY_LABEL } from '../data/types';
 import { href } from '../lib/router';
-import { figureHtml } from '../data/figures-data';
+import { figureHtml, figureSlot } from '../data/figures-data';
 import { ARTICLE_POINTS } from '../data/hooks';
 
 // 本文中の [text](/articles/slug/) をリンクに変換する（他記事とつなぐための最小限のインライン記法）。
@@ -67,9 +67,12 @@ export default function ArticlePage({ id }: { id: string }) {
           {s.paragraphs.map((p, i2) => (
             <p key={i2}>{renderParagraph(p)}</p>
           ))}
+          {figureSlot(article.slug) === i && figureHtml(article.slug) && (
+            <div dangerouslySetInnerHTML={{ __html: figureHtml(article.slug)! }} />
+          )}
         </section>
       ))}
-      {figureHtml(article.slug) && (
+      {figureSlot(article.slug) < 0 && figureHtml(article.slug) && (
         <div dangerouslySetInnerHTML={{ __html: figureHtml(article.slug)! }} />
       )}
       <footer className="article__sources">
