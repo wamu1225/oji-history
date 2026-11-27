@@ -310,22 +310,97 @@ function buildShibusawaTeiTimelineSvg(): string {
 
 // 装束稲荷の狐火伝承から「狐の行列」までの年表
 function buildSozokuInariTimelineSvg(): string {
-  const node = (x: number, year: string, label: string, color: string) =>
-    `<circle cx="${x}" cy="54" r="9" fill="${color}"/>` +
-    `<text x="${x}" y="34" font-size="11" font-weight="700" fill="#262420" text-anchor="middle">${year}</text>` +
-    `<text x="${x}" y="80" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[0]}</text>` +
-    (label.includes('|') ? `<text x="${x}" y="92" font-size="10.5" fill="#262420" text-anchor="middle">${label.split('|')[1]}</text>` : '');
+  const Y0 = 40;
+  const k = 2.7;
+  const y = (yr: number) => Y0 + (yr - 1834) * k;
+  const AX = 74;
+  const H = Math.round(y(2026)) + 40;
+  const band = (y0: number, y1: number, fill: string) =>
+    `<rect x="${AX - 6}" y="${y(y0).toFixed(1)}" width="12" height="${((y1 - y0) * k).toFixed(1)}" fill="${fill}"/>`;
+  const ev = (yr: number, yearLabel: string, label: string) => {
+    const [l1, l2] = label.split('|');
+    const yy = y(yr);
+    return `<line x1="${AX + 6}" y1="${yy.toFixed(1)}" x2="${AX + 16}" y2="${yy.toFixed(1)}" stroke="#262420" stroke-width="1.2"/>` +
+      `<text x="${AX - 12}" y="${(yy + 4).toFixed(1)}" font-size="11.5" font-weight="700" fill="#262420" text-anchor="end">${yearLabel}</text>` +
+      `<text x="${AX + 22}" y="${(yy + 4).toFixed(1)}" font-size="11.5" fill="#262420">${l1}</text>` +
+      (l2 ? `<text x="${AX + 22}" y="${(yy + 18).toFixed(1)}" font-size="11.5" fill="#262420">${l2}</text>` : '');
+  };
   return (
     `<figure class="fig">` +
-    `<svg class="diagram-single" viewBox="0 0 300 110" width="100%" role="img" aria-label="装束稲荷の狐火伝承の年表の図">` +
-    `<rect width="300" height="110" fill="#f0ede3"/>` +
-    `<line x1="34" y1="54" x2="266" y2="54" stroke="#8a8170" stroke-width="2.2"/>` +
-    `<path d="M266 54 l-8 -4 M266 54 l-8 4" stroke="#8a8170" stroke-width="2.2" fill="none"/>` +
-    node(40, '伝承', '大晦日に狐が|装束を整える', '#35547a') +
-    node(150, '1857', '広重が「名所|江戸百景」に描く', '#b8923f') +
-    node(260, '1993', '「狐の行列」|が始まる', '#262420') +
+    `<svg class="diagram-single" viewBox="0 0 300 ${H}" width="100%" role="img" aria-label="装束榎の絵、榎の伐採、狐の行列の始まりまでを年に比例した縦の軸で描いた図">` +
+    `<title>装束榎と狐の行列の年表の図</title>` +
+    `<rect width="300" height="${H}" fill="#f0ede3"/>` +
+    `<line x1="${AX}" y1="${y(1834).toFixed(1)}" x2="${AX}" y2="${y(2026).toFixed(1)}" stroke="#8a8170" stroke-width="2"/>` +
+    band(1926, 1935, '#7a3a2e') + band(1993, 2026, '#35547a') +
+    ev(1834, '1834', '『江戸名所図会』に|「衣裳榎」の挿絵') +
+    ev(1857, '1857', '広重が榎の下の|狐火を描く') +
+    ev(1930, '昭和初期', '道路拡張で榎を切る') +
+    ev(1993, '1993', '狐の行列が始まる') +
+    ev(1999, '1999', '自治大臣表彰を受ける') +
+    ev(2026, '2026', '第34回の大晦日') +
     `</svg>` +
-    `<figcaption>狐の行列は、伝承にちなんで平成に始まった新しい行事です。</figcaption>` +
+    `<figcaption>縦の長さは年数に比例しています。絵から行列の始まりまで136年、行列は第34回まで続いています。昭和初期は年を特定せず、目安の幅で示しています。</figcaption>` +
+    `</figure>`
+  );
+}
+
+// 王子両社の1年：4つの行事を月の軸と対応させる
+function buildOjiYearSvg(): string {
+  const X0 = 6;
+  const W = 276;
+  const mw = W / 12;
+  const mx = (m: number) => X0 + (m - 0.5) * mw;
+  const dayX = (m: number, d: number) => X0 + ((m - 1) + d / 31) * mw;
+  const BLUE = '#35547a';
+  const BROWN = '#8a4a2f';
+  const AY = 44;
+  const items: { n: number; color: string; head: string; sub: string }[] = [
+    { n: 1, color: BLUE, head: '2月の初午の日　凧市', sub: '王子稲荷神社。初午の日ににぎわった' },
+    { n: 2, color: BROWN, head: '8月　例大祭（槍祭）', sub: '王子神社。槍形の御守護を授与' },
+    { n: 3, color: BROWN, head: '12月6日　熊手市', sub: '王子神社。酉の市は11月が多いが毎年この日' },
+    { n: 4, color: BLUE, head: '12月31日　狐の行列', sub: '装束稲荷神社から王子稲荷神社へ' },
+  ];
+  const RY = 118;
+  const RH = 40;
+  const H = RY + (items.length - 1) * RH + 52;
+  const months = Array.from({ length: 12 }, (_, i) => i + 1)
+    .map((m) => `<text x="${mx(m).toFixed(1)}" y="${AY + 22}" font-size="11" fill="#262420" text-anchor="middle">${m}</text>`)
+    .join('');
+  const ticks = Array.from({ length: 13 }, (_, i) => `<line x1="${(X0 + i * mw).toFixed(1)}" y1="${AY - 4}" x2="${(X0 + i * mw).toFixed(1)}" y2="${AY + 4}" stroke="#8a8170" stroke-width="1"/>`).join('');
+  const bars =
+    `<rect x="${(X0 + mw).toFixed(1)}" y="${AY - 4}" width="${mw.toFixed(1)}" height="8" fill="${BLUE}"/>` +
+    `<rect x="${(X0 + 7 * mw).toFixed(1)}" y="${AY - 4}" width="${mw.toFixed(1)}" height="8" fill="${BROWN}"/>`;
+  const pins = [
+    { n: 1, x: mx(2), color: BLUE },
+    { n: 2, x: mx(8), color: BROWN },
+    { n: 3, x: dayX(12, 6), color: BROWN },
+    { n: 4, x: dayX(12, 31), color: BLUE },
+  ]
+    .map((p) => `<circle cx="${p.x.toFixed(1)}" cy="${AY - 22}" r="8.5" fill="${p.color}"/><text x="${p.x.toFixed(1)}" y="${AY - 22}" font-size="11.5" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central">${p.n}</text>` +
+      `<line x1="${p.x.toFixed(1)}" y1="${AY - 13}" x2="${p.x.toFixed(1)}" y2="${AY - 4}" stroke="${p.color}" stroke-width="1.5"/>`)
+    .join('');
+  const rows = items
+    .map((it, i) => {
+      const yy = RY + i * RH;
+      return `<circle cx="20" cy="${yy}" r="9" fill="${it.color}"/><text x="20" y="${yy}" font-size="12" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central">${it.n}</text>` +
+        `<text x="38" y="${yy - 3}" font-size="12.5" font-weight="700" fill="#262420">${it.head}</text>` +
+        `<text x="38" y="${yy + 13}" font-size="11.5" fill="#262420">${it.sub}</text>`;
+    })
+    .join('');
+  const ly = H - 12;
+  return (
+    `<figure class="fig">` +
+    `<svg class="diagram-single" viewBox="0 0 300 ${H}" width="100%" role="img" aria-label="王子神社と王子稲荷神社の4つの行事を、1年の月の軸に置いた図">` +
+    `<title>王子両社の1年の図</title>` +
+    `<rect width="300" height="${H}" fill="#f0ede3"/>` +
+    `<line x1="${X0}" y1="${AY}" x2="${X0 + W}" y2="${AY}" stroke="#8a8170" stroke-width="2"/>` +
+    ticks + bars + pins + months +
+    `<text x="${X0}" y="${AY + 40}" font-size="11" fill="#262420">（月）</text>` +
+    rows +
+    `<rect x="12" y="${ly - 10}" width="11" height="11" fill="${BROWN}"/><text x="28" y="${ly}" font-size="11.5" fill="#262420">王子神社</text>` +
+    `<rect x="104" y="${ly - 10}" width="11" height="11" fill="${BLUE}"/><text x="120" y="${ly}" font-size="11.5" fill="#262420">王子稲荷神社</text>` +
+    `</svg>` +
+    `<figcaption>2月の初午と8月の例大祭は日が年により変わるため、その月を帯で示しました。12月の2つは日付で示しています。</figcaption>` +
     `</figure>`
   );
 }
@@ -453,13 +528,14 @@ const figures: Record<string, string> = {
   wagashi: buildWagashiRouteSvg(),
   'akarenga-library': buildAkarengaTimelineSvg(),
   'sozoku-inari': buildSozokuInariTimelineSvg(),
+  'oji-jinja': buildOjiYearSvg(),
   asukayama: buildAsukayamaTimelineSvg(),
   'shibusawa-tei': buildShibusawaTeiTimelineSvg(),
   'nanushi-no-taki': buildNanushiSvg(),
 };
 
 // 図を、何番目の節のあとに置くか（無ければ記事の末尾）
-const figureAfter: Record<string, number> = { gunju: 1 };
+const figureAfter: Record<string, number> = { gunju: 1, 'sozoku-inari': 1, 'oji-jinja': 0 };
 export function figureSlot(slug: string): number {
   return figureAfter[slug] ?? -1;
 }
